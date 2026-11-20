@@ -1,0 +1,1672 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bunny's Film Diary — Review Card Studio</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              900: '#7c2d12',
+            },
+            darkbg: '#0f1117',
+            darkcard: '#181b24',
+            darkborder: '#2a2f3d'
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0d12;
+      color: #e2e8f0;
+    }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #11131a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272c3a;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b4255;
+    }
+    
+    /* Toggle Switch Styling */
+    .toggle-checkbox:checked {
+      right: 0;
+      background-color: #f97316;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #7c2d12;
+    }
+
+    /* Preset Chip active animations */
+    .chip-btn {
+      transition: all 0.15s ease-in-out;
+    }
+    .chip-btn:hover {
+      transform: translateY(-1px);
+    }
+    .chip-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Preset Canvas Ratios Wrapper */
+    .canvas-preview-container {
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+      background-size: 16px 16px;
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col md:flex-row">
+
+  <!-- ================================================================= -->
+  <!-- LEFT SIDEBAR: CONTROL PANEL -->
+  <!-- ================================================================= -->
+  <aside class="w-full md:w-[450px] lg:w-[480px] xl:w-[520px] bg-darkcard border-r border-darkborder flex flex-col h-full z-20 shrink-0">
+    
+    <!-- Top Header -->
+    <div class="px-5 py-4 border-b border-darkborder flex items-center justify-between bg-darkcard/80 backdrop-blur-md">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 font-black text-lg">
+          🎬
+        </div>
+        <div>
+          <h1 class="font-bold text-base text-white leading-tight">Film Diary Studio</h1>
+          <p class="text-xs text-gray-400 font-mono">Instagram Card Builder</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-reset-form" title="Reset to Sample Review" class="px-2.5 py-1.5 text-xs font-medium text-gray-300 hover:text-white bg-darkbg hover:bg-darkborder rounded-lg border border-darkborder transition flex items-center gap-1.5">
+          <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-darkborder bg-darkbg/50 px-2 pt-2 gap-1 font-medium text-xs">
+      <button data-tab="tab-movie" class="tab-btn active border-b-2 border-brand-500 text-brand-500 px-3 py-2 rounded-t-lg transition flex items-center gap-1.5">
+        <i data-lucide="film" class="w-3.5 h-3.5"></i> Movie Info
+      </button>
+      <button data-tab="tab-review" class="tab-btn text-gray-400 hover:text-gray-200 border-b-2 border-transparent px-3 py-2 rounded-t-lg transition flex items-center gap-1.5">
+        <i data-lucide="file-text" class="w-3.5 h-3.5"></i> Review & Layout
+      </button>
+      <button data-tab="tab-style" class="tab-btn text-gray-400 hover:text-gray-200 border-b-2 border-transparent px-3 py-2 rounded-t-lg transition flex items-center gap-1.5">
+        <i data-lucide="palette" class="w-3.5 h-3.5"></i> Theme & Ratio
+      </button>
+      <button data-tab="tab-brand" class="tab-btn text-gray-400 hover:text-gray-200 border-b-2 border-transparent px-3 py-2 rounded-t-lg transition flex items-center gap-1.5">
+        <i data-lucide="bookmark" class="w-3.5 h-3.5"></i> Brand & Saved
+      </button>
+    </div>
+
+    <!-- Scrollable Tab Content Container -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-6">
+
+      <!-- ================= TAB 1: MOVIE INFO ================= -->
+      <div id="tab-movie" class="tab-content space-y-5">
+
+        <!-- Movie Title & Subtitle -->
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Movie Title</label>
+            <input type="text" id="input-title" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="e.g. DUNE: PART TWO">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Year / Tagline</label>
+              <input type="text" id="input-year" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="2024 · Sci-Fi / Epic">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Star Rating (0 - 5)</label>
+              <div class="flex items-center gap-2">
+                <input type="number" id="input-rating" min="0" max="5" step="0.5" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="4.5">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Poster Upload & Framing -->
+        <div class="bg-darkbg p-4 rounded-xl border border-darkborder space-y-3">
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Movie Poster Image</label>
+          <div class="flex items-center gap-3">
+            <input type="file" id="input-poster-file" accept="image/*" class="hidden">
+            <button type="button" onclick="document.getElementById('input-poster-file').click()" class="px-3.5 py-2 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition flex items-center gap-1.5 shadow-sm">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i> Choose Image
+            </button>
+            <button type="button" id="btn-clear-poster" class="px-3 py-2 text-xs font-medium text-gray-400 hover:text-red-400 bg-darkcard rounded-lg border border-darkborder transition">
+              Remove
+            </button>
+            <span id="poster-file-name" class="text-xs text-gray-400 truncate flex-1">Default Fallback Poster</span>
+          </div>
+
+          <!-- Poster Framing & Crop Focus Controls -->
+          <div class="grid grid-cols-2 gap-3 pt-2 border-t border-darkborder/60">
+            <div>
+              <label class="block text-[11px] font-medium text-gray-400 mb-1">Poster Framing Mode</label>
+              <select id="select-poster-mode" class="w-full bg-darkcard border border-darkborder rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500">
+                <option value="cover">Fill (Auto Crop Aspect)</option>
+                <option value="contain">Fit (Full Poster Visible)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-gray-400 mb-1">Crop Focus</label>
+              <select id="select-poster-focus" class="w-full bg-darkcard border border-darkborder rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500">
+                <option value="center">Center</option>
+                <option value="top">Top Focus</option>
+                <option value="bottom">Bottom Focus</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= CRITICAL FIX: WHERE WATCHED SECTION ================= -->
+        <div class="bg-darkbg p-4 rounded-xl border border-darkborder space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Where Watched Badge</label>
+            <span class="text-[10px] text-brand-500 font-mono font-semibold bg-brand-500/10 px-2 py-0.5 rounded">Zero-Jumble Engine</span>
+          </div>
+
+          <!-- Row 1 (Watch Medium Buttons: 3-column equal grid) -->
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-medium="theater" class="medium-btn active px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition bg-brand-500/20 text-brand-500 border-brand-500/40">
+              <i data-lucide="ticket" class="w-3.5 h-3.5"></i> Theater
+            </button>
+            <button type="button" data-medium="ott" class="medium-btn px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition bg-darkcard text-gray-400 border-darkborder hover:text-white">
+              <i data-lucide="tv" class="w-3.5 h-3.5"></i> OTT
+            </button>
+            <button type="button" data-medium="none" class="medium-btn px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition bg-darkcard text-gray-400 border-darkborder hover:text-white">
+              <i data-lucide="eye-off" class="w-3.5 h-3.5"></i> None
+            </button>
+          </div>
+
+          <!-- Row 2 (Rewatch Toggle: Dedicated Full Width Row) -->
+          <div class="flex items-center justify-between bg-darkcard px-3 py-2.5 rounded-lg border border-darkborder">
+            <div class="flex items-center gap-2">
+              <i data-lucide="repeat" class="w-4 h-4 text-brand-500"></i>
+              <span class="text-xs font-semibold text-gray-200">Rewatch Experience</span>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="check-rewatch" class="sr-only peer" checked>
+              <div class="w-9 h-5 bg-darkbg border border-darkborder peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+            </label>
+          </div>
+
+          <!-- Row 3 (Venue / Format / Platform preset chips & input) -->
+          <div id="where-watched-details" class="space-y-2.5 pt-1">
+            <div class="flex items-center justify-between">
+              <label id="where-details-label" class="text-[11px] font-semibold text-gray-400">Theater Format / Venue</label>
+              <span class="text-[10px] text-gray-500">Tap chip or type custom</span>
+            </div>
+            
+            <!-- Preset Chips -->
+            <div id="chips-container" class="flex flex-wrap gap-1.5">
+              <!-- Dynamically populated chips -->
+            </div>
+
+            <!-- Custom Venue Input with Clear -->
+            <div class="relative flex items-center">
+              <input type="text" id="input-venue" class="w-full bg-darkcard border border-darkborder rounded-lg pl-3 pr-8 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500" placeholder="e.g. IMAX, Prasads, Netflix">
+              <button type="button" id="btn-clear-venue" class="absolute right-2 text-gray-500 hover:text-white text-xs p-1">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Director & Cast -->
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Director</label>
+            <input type="text" id="input-director" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="Denis Villeneuve">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Key Cast</label>
+            <input type="text" id="input-cast" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="Timothée Chalamet, Zendaya">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 2: REVIEW & LAYOUT ================= -->
+      <div id="tab-review" class="tab-content hidden space-y-5">
+
+        <!-- Review Box Label -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-1">Review Box Header Label</label>
+          <input type="text" id="input-review-label" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500 transition" placeholder="BUNNY'S REVIEW">
+        </div>
+
+        <!-- Review Body Content -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Review Copy / Text</label>
+            <button type="button" id="btn-test-huge" class="text-[11px] font-semibold text-brand-500 hover:text-brand-400 transition">
+              + Insert Huge Review Test
+            </button>
+          </div>
+          <textarea id="input-review-text" rows="8" class="w-full bg-darkbg border border-darkborder rounded-lg p-3 text-sm text-white focus:outline-none focus:border-brand-500 font-sans leading-relaxed resize-y" placeholder="Write your full movie review here..."></textarea>
+          
+          <!-- Live Fit Metrics Indicator Pill -->
+          <div id="fit-metrics-pill" class="flex items-center justify-between px-3 py-2 bg-darkbg rounded-lg border border-darkborder text-xs">
+            <div class="flex items-center gap-2">
+              <span id="fit-status-dot" class="w-2 h-2 rounded-full bg-green-500"></span>
+              <span id="fit-status-text" class="font-medium text-gray-300">Canvas Layout Perfect</span>
+            </div>
+            <span id="fit-details" class="font-mono text-gray-400">100% Fit</span>
+          </div>
+        </div>
+
+        <!-- Layout & Column Controls -->
+        <div class="bg-darkbg p-4 rounded-xl border border-darkborder space-y-3">
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Review Text Columns Mode</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button type="button" data-cols="auto" class="col-mode-btn active px-3 py-2 rounded-lg text-xs font-semibold border text-center transition bg-brand-500/20 text-brand-500 border-brand-500/40">
+              Auto Switch
+            </button>
+            <button type="button" data-cols="1" class="col-mode-btn px-3 py-2 rounded-lg text-xs font-semibold border text-center transition bg-darkcard text-gray-400 border-darkborder hover:text-white">
+              1 Column
+            </button>
+            <button type="button" data-cols="2" class="col-mode-btn px-3 py-2 rounded-lg text-xs font-semibold border text-center transition bg-darkcard text-gray-400 border-darkborder hover:text-white">
+              2 Columns
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 3: THEME & RATIO ================= -->
+      <div id="tab-style" class="tab-content hidden space-y-5">
+
+        <!-- Instagram Aspect Ratios -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Instagram Aspect Ratio</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button type="button" data-ratio="4:5" class="ratio-btn active p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-brand-500/10 border-brand-500 text-white">
+              <span class="font-bold text-sm">4 : 5</span>
+              <span class="text-[10px] font-mono text-gray-400">1080 × 1350 (Portrait)</span>
+            </button>
+            <button type="button" data-ratio="3:4" class="ratio-btn p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-darkbg border-darkborder text-gray-400 hover:text-white">
+              <span class="font-bold text-sm">3 : 4</span>
+              <span class="text-[10px] font-mono text-gray-400">1080 × 1440 (Standard)</span>
+            </button>
+            <button type="button" data-ratio="1:1" class="ratio-btn p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-darkbg border-darkborder text-gray-400 hover:text-white">
+              <span class="font-bold text-sm">1 : 1</span>
+              <span class="text-[10px] font-mono text-gray-400">1080 × 1080 (Square)</span>
+            </button>
+            <button type="button" data-ratio="9:16" class="ratio-btn p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-darkbg border-darkborder text-gray-400 hover:text-white">
+              <span class="font-bold text-sm">9 : 16</span>
+              <span class="text-[10px] font-mono text-gray-400">1080 × 1920 (Story)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Visual Theme Preset Cards -->
+        <div>
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider mb-2">Visual Theme Preset</label>
+          <div class="grid grid-cols-2 gap-2.5">
+            
+            <button type="button" data-theme="blurred-glass" class="theme-btn active p-3 rounded-xl border text-left transition bg-gradient-to-br from-slate-900 to-slate-800 border-brand-500 shadow-md">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-white">Blurred Glass</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+              </div>
+              <p class="text-[10px] text-gray-400">Modern frosted cinematic blur</p>
+            </button>
+
+            <button type="button" data-theme="editorial-dark" class="theme-btn p-3 rounded-xl border text-left transition bg-zinc-950 border-darkborder text-gray-300 hover:border-gray-500">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-white">Editorial Dark</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-zinc-700"></span>
+              </div>
+              <p class="text-[10px] text-gray-400">High contrast magazine aesthetic</p>
+            </button>
+
+            <button type="button" data-theme="minimalist-noir" class="theme-btn p-3 rounded-xl border text-left transition bg-black border-darkborder text-gray-300 hover:border-gray-500">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-white">Minimalist Noir</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+              </div>
+              <p class="text-[10px] text-gray-400">Monochrome, ultra-clean</p>
+            </button>
+
+            <button type="button" data-theme="warm-cinema-paper" class="theme-btn p-3 rounded-xl border text-left transition bg-amber-950/40 border-darkborder text-gray-300 hover:border-gray-500">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-white">Warm Paper</span>
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-600"></span>
+              </div>
+              <p class="text-[10px] text-gray-400">Analog warmth & paper grain</p>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Accent Color Picker -->
+        <div class="bg-darkbg p-4 rounded-xl border border-darkborder flex items-center justify-between">
+          <div>
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Accent Color</label>
+            <p class="text-[10px] text-gray-400">Stars, badges, header highlights</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="color" id="input-accent-color" value="#f97316" class="w-8 h-8 rounded-lg bg-transparent cursor-pointer border border-darkborder">
+            <span id="accent-hex-label" class="text-xs font-mono text-gray-300">#F97316</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 4: BRAND & ARCHIVE ================= -->
+      <div id="tab-brand" class="tab-content hidden space-y-5">
+
+        <!-- Editorial Header Settings -->
+        <div class="space-y-3">
+          <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Editorial Brand Branding</label>
+          
+          <div>
+            <label class="block text-[11px] font-medium text-gray-400 mb-1">Main Brand Header Name</label>
+            <input type="text" id="input-brand-name" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="BUNNY'S FILM DIARY">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-medium text-gray-400 mb-1">Header Sub-Tagline</label>
+            <input type="text" id="input-header-subtagline" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="CINEMA MAKES LIFE BETTER">
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-medium text-gray-400 mb-1">Instagram Handle</label>
+              <input type="text" id="input-insta-handle" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="@bunnysfilmdiary">
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-gray-400 mb-1">Footer Tagline</label>
+              <input type="text" id="input-footer-tagline" class="w-full bg-darkbg border border-darkborder rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-brand-500" placeholder="FOLLOW FOR DAILY REVIEWS">
+            </div>
+          </div>
+        </div>
+
+        <!-- Local Archive Management -->
+        <div class="bg-darkbg p-4 rounded-xl border border-darkborder space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-gray-300 uppercase tracking-wider">Saved Reviews Archive</label>
+            <button type="button" id="btn-save-archive" class="px-3 py-1.5 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-lg transition flex items-center gap-1 shadow-sm">
+              <i data-lucide="save" class="w-3.5 h-3.5"></i> Save Current
+            </button>
+          </div>
+          
+          <div id="archive-list" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Bottom Action Area -->
+    <div class="p-4 border-t border-darkborder bg-darkcard flex items-center gap-3">
+      <button id="btn-download-png" class="flex-1 py-3 bg-gradient-to-r from-brand-600 to-amber-600 hover:from-brand-500 hover:to-amber-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2">
+        <i data-lucide="download" class="w-4 h-4"></i> Export High-Res PNG (1080p)
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ================================================================= -->
+  <!-- RIGHT MAIN PREVIEW PANEL -->
+  <!-- ================================================================= -->
+  <main class="flex-1 bg-darkbg flex flex-col h-full overflow-hidden relative">
+    
+    <!-- Top Floating Toolbar -->
+    <header class="h-14 px-6 border-b border-darkborder/80 flex items-center justify-between bg-darkcard/50 backdrop-blur-md shrink-0">
+      <div class="flex items-center gap-3">
+        <span class="text-xs font-mono font-medium text-gray-400">Canvas Preview Target:</span>
+        <span id="preview-ratio-badge" class="px-2.5 py-1 text-xs font-semibold bg-brand-500/10 text-brand-500 rounded-md border border-brand-500/30">
+          4:5 Portrait (1080 × 1350)
+        </span>
+      </div>
+      <div class="text-xs text-gray-400 font-mono flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+        Live Render Active
+      </div>
+    </header>
+
+    <!-- Interactive Canvas Display Center -->
+    <div class="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden canvas-preview-container">
+      <div class="relative max-w-full max-h-full flex items-center justify-center shadow-2xl rounded-xl overflow-hidden border border-white/10">
+        <canvas id="review-canvas" class="max-w-full max-h-[78vh] w-auto h-auto block rounded-lg shadow-2xl"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- APPLICATION ENGINE (JAVASCRIPT) -->
+  <!-- ================================================================= -->
+  <script>
+    // Global State Container
+    const state = {
+      title: "DUNE: PART TWO",
+      year: "2024 · Sci-Fi / Epic",
+      rating: 4.5,
+      director: "Denis Villeneuve",
+      cast: "Timothée Chalamet, Zendaya, Rebecca Ferguson",
+      posterImage: null, // Image object or null fallback
+      posterMode: "cover", // "cover" or "contain"
+      posterFocus: "center", // "center", "top", "bottom"
+      
+      // Where Watched Engine
+      watchMedium: "theater", // "theater", "ott", "none"
+      venueText: "IMAX", // e.g. "IMAX", "PVR Prasads", "Netflix"
+      isRewatch: true, // boolean
+
+      // Review Content
+      reviewLabel: "BUNNY'S REVIEW",
+      reviewText: "Denis Villeneuve delivers an unassailable sci-fi masterpiece with Dune: Part Two. Greig Fraser’s cinematography elevates every frame to mythic grandeur, while Hans Zimmer’s thunderous score shakes the very soul of Arrakis. Timothée Chalamet gives a career-defining performance as Paul Atreides transitions from reluctant hero to feared messiah.\n\nThe pacing is relentless, the scale is unmatched in modern blockbuster cinema, and the sandworm sequences set a new benchmark for cinematic spectacle. An absolute triumph that demands the largest screen possible.",
+      columnMode: "auto", // "auto", "1", "2"
+
+      // Theme & Layout Ratios
+      aspectRatio: "4:5", // "4:5", "3:4", "1:1", "9:16"
+      theme: "blurred-glass", // "blurred-glass", "editorial-dark", "minimalist-noir", "warm-cinema-paper"
+      accentColor: "#f97316",
+
+      // Brand Info
+      brandName: "BUNNY'S FILM DIARY",
+      headerSubtagline: "CINEMA MAKES LIFE BETTER",
+      instaHandle: "@bunnysfilmdiary",
+      footerTagline: "FOLLOW FOR DAILY REVIEWS"
+    };
+
+    // Aspect Ratio Dimension Map (1080p width base)
+    const RATIO_MAP = {
+      "4:5":  { width: 1080, height: 1350, name: "4:5 Portrait (1080 × 1350)" },
+      "3:4":  { width: 1080, height: 1440, name: "3:4 Standard (1080 × 1440)" },
+      "1:1":  { width: 1080, height: 1080, name: "1:1 Square (1080 × 1080)" },
+      "9:16": { width: 1080, height: 1920, name: "9:16 Story (1080 × 1920)" }
+    };
+
+    // Presets for Theater vs OTT
+    const PRESETS = {
+      theater: ["IMAX", "Dolby Atmos", "4DX", "FDFS", "PVR Prasads", "Single Screen"],
+      ott: ["Netflix", "Prime Video", "JioHotstar", "Aha", "SonyLIV", "ZEE5", "Apple TV+"]
+    };
+
+    // Theme Profiles (Colors, Alpha, Styles)
+    const THEMES = {
+      "blurred-glass": {
+        bgType: "glass",
+        bgOverlay: "rgba(15, 20, 30, 0.82)",
+        cardBg: "rgba(255, 255, 255, 0.06)",
+        cardBorder: "rgba(255, 255, 255, 0.12)",
+        textPrimary: "#FFFFFF",
+        textSecondary: "#CBD5E1",
+        textMuted: "#94A3B8",
+        badgeBg: "rgba(249, 115, 22, 0.18)",
+        badgeBorder: "rgba(249, 115, 22, 0.4)",
+        reviewBoxBg: "rgba(15, 23, 42, 0.75)",
+        divider: "rgba(255, 255, 255, 0.1)"
+      },
+      "editorial-dark": {
+        bgType: "solid",
+        bgColor: "#090A0F",
+        cardBg: "#12151E",
+        cardBorder: "#232838",
+        textPrimary: "#F8FAFC",
+        textSecondary: "#94A3B8",
+        textMuted: "#64748B",
+        badgeBg: "rgba(249, 115, 22, 0.15)",
+        badgeBorder: "rgba(249, 115, 22, 0.35)",
+        reviewBoxBg: "#0F121B",
+        divider: "#1E2333"
+      },
+      "minimalist-noir": {
+        bgType: "solid",
+        bgColor: "#050505",
+        cardBg: "#0D0D0D",
+        cardBorder: "#222222",
+        textPrimary: "#FFFFFF",
+        textSecondary: "#A1A1AA",
+        textMuted: "#71717A",
+        badgeBg: "#18181B",
+        badgeBorder: "#3F3F46",
+        reviewBoxBg: "#0A0A0A",
+        divider: "#27272A"
+      },
+      "warm-cinema-paper": {
+        bgType: "solid",
+        bgColor: "#161311",
+        cardBg: "#221C18",
+        cardBorder: "#3D322B",
+        textPrimary: "#FDF6E2",
+        textSecondary: "#D7C4B7",
+        textMuted: "#9E8A7C",
+        badgeBg: "rgba(217, 119, 6, 0.2)",
+        badgeBorder: "rgba(217, 119, 6, 0.4)",
+        reviewBoxBg: "#1A1512",
+        divider: "#362C25"
+      }
+    };
+
+    // Initialize Canvas & Context
+    const canvas = document.getElementById('review-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // DOM Element References
+    const inputTitle = document.getElementById('input-title');
+    const inputYear = document.getElementById('input-year');
+    const inputRating = document.getElementById('input-rating');
+    const inputDirector = document.getElementById('input-director');
+    const inputCast = document.getElementById('input-cast');
+    const inputReviewLabel = document.getElementById('input-review-label');
+    const inputReviewText = document.getElementById('input-review-text');
+    const selectPosterMode = document.getElementById('select-poster-mode');
+    const selectPosterFocus = document.getElementById('select-poster-focus');
+    const inputPosterFile = document.getElementById('input-poster-file');
+    const btnClearPoster = document.getElementById('btn-clear-poster');
+    const posterFileName = document.getElementById('poster-file-name');
+    const checkRewatch = document.getElementById('check-rewatch');
+    const inputVenue = document.getElementById('input-venue');
+    const btnClearVenue = document.getElementById('btn-clear-venue');
+    const whereWatchedDetails = document.getElementById('where-watched-details');
+    const whereDetailsLabel = document.getElementById('where-details-label');
+    const chipsContainer = document.getElementById('chips-container');
+    const inputAccentColor = document.getElementById('input-accent-color');
+    const accentHexLabel = document.getElementById('accent-hex-label');
+    const inputBrandName = document.getElementById('input-brand-name');
+    const inputHeaderSubtagline = document.getElementById('input-header-subtagline');
+    const inputInstaHandle = document.getElementById('input-insta-handle');
+    const inputFooterTagline = document.getElementById('input-footer-tagline');
+    const fitStatusDot = document.getElementById('fit-status-dot');
+    const fitStatusText = document.getElementById('fit-status-text');
+    const fitDetails = document.getElementById('fit-details');
+
+    // Default Fallback Image Generation (Vector Artwork Poster)
+    let fallbackPosterCanvas = null;
+    function getFallbackPosterImage() {
+      if (!fallbackPosterCanvas) {
+        fallbackPosterCanvas = document.createElement('canvas');
+        fallbackPosterCanvas.width = 600;
+        fallbackPosterCanvas.height = 900;
+        const fCtx = fallbackPosterCanvas.getContext('2d');
+
+        // Dark gradient background
+        const grad = fCtx.createLinearGradient(0, 0, 600, 900);
+        grad.addColorStop(0, '#1e293b');
+        grad.addColorStop(0.5, '#0f172a');
+        grad.addColorStop(1, '#020617');
+        fCtx.fillStyle = grad;
+        fCtx.fillRect(0, 0, 600, 900);
+
+        // Decorative geometric cinema reel graphic
+        fCtx.strokeStyle = 'rgba(249, 115, 22, 0.25)';
+        fCtx.lineWidth = 3;
+        fCtx.beginPath();
+        fCtx.arc(300, 400, 180, 0, Math.PI * 2);
+        fCtx.stroke();
+
+        fCtx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        fCtx.beginPath();
+        fCtx.arc(300, 400, 120, 0, Math.PI * 2);
+        fCtx.stroke();
+
+        // Stylized Film Projector Beams
+        fCtx.fillStyle = 'rgba(249, 115, 22, 0.08)';
+        fCtx.beginPath();
+        fCtx.moveTo(300, 400);
+        fCtx.lineTo(600, 150);
+        fCtx.lineTo(600, 650);
+        fCtx.closePath();
+        fCtx.fill();
+
+        // Icon text emblem
+        fCtx.fillStyle = '#f97316';
+        fCtx.font = '900 72px Inter, sans-serif';
+        fCtx.textAlign = 'center';
+        fCtx.textBaseline = 'middle';
+        fCtx.fillText('🎬', 300, 390);
+
+        fCtx.fillStyle = '#FFFFFF';
+        fCtx.font = '800 24px "JetBrains Mono", monospace';
+        fCtx.fillText('CINEMATIC POSTER', 300, 480);
+        fCtx.fillStyle = '#94A3B8';
+        fCtx.font = '600 16px Inter, sans-serif';
+        fCtx.fillText('Bunny’s Review Studio', 300, 515);
+      }
+      return fallbackPosterCanvas;
+    }
+
+    // =================================================================
+    // CRITICAL FIX 1: CANVAS WATCH BADGE LAYOUT ENGINE (ZERO JUMBLE)
+    // =================================================================
+    /**
+     * Measure & layout badges horizontally with clean multi-row wrapping & truncation.
+     * Shared by both layout evaluation and final rendering.
+     */
+    function layoutWatchBadges(ctx, badges, maxW, isCompact) {
+      if (!badges || badges.length === 0) return { items: [], totalHeight: 0 };
+
+      // Exact Font & Dimensions
+      const fontSize = isCompact ? 14 : 16;
+      ctx.font = `700 ${fontSize}px "JetBrains Mono", monospace`;
+      
+      const pillH = isCompact ? 34 : 38;
+      const padLeft = isCompact ? 12 : 14;
+      const padRight = isCompact ? 12 : 14;
+      const iconSize = isCompact ? 15 : 17;
+      const iconGap = 8;
+      const gapX = 10;
+      const gapY = 10;
+
+      let cursorX = 0;
+      let cursorY = 0;
+      const items = [];
+
+      badges.forEach(b => {
+        let text = b.label.toUpperCase();
+        let textW = ctx.measureText(text).width;
+        let pillW = padLeft + iconSize + iconGap + textW + padRight;
+
+        // Truncate text with ellipsis if it exceeds max column width
+        if (pillW > maxW) {
+          while (text.length > 2 && (padLeft + iconSize + iconGap + ctx.measureText(text + '…').width + padRight) > maxW) {
+            text = text.slice(0, -1);
+          }
+          text += '…';
+          textW = ctx.measureText(text).width;
+          pillW = padLeft + iconSize + iconGap + textW + padRight;
+        }
+
+        // Multi-row wrapping calculation
+        if (cursorX > 0 && (cursorX + pillW > maxW)) {
+          cursorX = 0;
+          cursorY += pillH + gapY;
+        }
+
+        items.push({
+          x: cursorX,
+          y: cursorY,
+          w: pillW,
+          h: pillH,
+          text: text,
+          badge: b,
+          fontSize,
+          padLeft,
+          iconSize,
+          iconGap
+        });
+
+        cursorX += pillW + gapX;
+      });
+
+      const totalHeight = items.length > 0 ? (cursorY + pillH) : 0;
+      return { items, totalHeight };
+    }
+
+    /**
+     * Draw Crisp Native Vector Icons inside badge icon bounding box
+     */
+    function drawBadgeIcon(ctx, iconType, x, y, size, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 1.8;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (iconType === 'ticket') {
+        // Cinema Ticket Icon
+        ctx.beginPath();
+        const r = size * 0.15;
+        ctx.rect(x, y + size * 0.15, size, size * 0.7);
+        ctx.stroke();
+        // Inner dashed notch line
+        ctx.setLineDash([2, 2]);
+        ctx.beginPath();
+        ctx.moveTo(x + size * 0.35, y + size * 0.15);
+        ctx.lineTo(x + size * 0.35, y + size * 0.85);
+        ctx.stroke();
+      } else if (iconType === 'ott') {
+        // TV / Screen Icon
+        ctx.beginPath();
+        ctx.rect(x, y + size * 0.1, size, size * 0.65);
+        ctx.stroke();
+        // Base legs
+        ctx.beginPath();
+        ctx.moveTo(x + size * 0.3, y + size * 0.9);
+        ctx.lineTo(x + size * 0.7, y + size * 0.9);
+        ctx.moveTo(x + size * 0.5, y + size * 0.75);
+        ctx.lineTo(x + size * 0.5, y + size * 0.9);
+        ctx.stroke();
+      } else if (iconType === 'rewatch') {
+        // Circular Refresh Arrows Icon
+        const cx = x + size / 2;
+        const cy = y + size / 2;
+        const rad = size * 0.35;
+        ctx.beginPath();
+        ctx.arc(cx, cy, rad, 0.2 * Math.PI, 1.6 * Math.PI);
+        ctx.stroke();
+        // Arrow head
+        ctx.beginPath();
+        ctx.moveTo(cx + rad * 0.6, cy - rad * 0.9);
+        ctx.lineTo(cx + rad * 1.2, cy - rad * 0.4);
+        ctx.lineTo(cx + rad * 0.4, cy - rad * 0.2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // =================================================================
+    // CRITICAL FIX 2: SIDEBAR UI "WHERE WATCHED" SECTION MANAGEMENT
+    // =================================================================
+    function renderWhereWatchedUI() {
+      // Update Watch Medium buttons active state
+      document.querySelectorAll('.medium-btn').forEach(btn => {
+        const med = btn.getAttribute('data-medium');
+        if (med === state.watchMedium) {
+          btn.className = "medium-btn active px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition bg-brand-500/20 text-brand-500 border-brand-500/40 shadow-sm";
+        } else {
+          btn.className = "medium-btn px-3 py-2 rounded-lg text-xs font-semibold border flex items-center justify-center gap-1.5 transition bg-darkcard text-gray-400 border-darkborder hover:text-white";
+        }
+      });
+
+      // Show/Hide Details container
+      if (state.watchMedium === 'none') {
+        whereWatchedDetails.classList.add('hidden');
+      } else {
+        whereWatchedDetails.classList.remove('hidden');
+        if (state.watchMedium === 'theater') {
+          whereDetailsLabel.textContent = "Theater Format / Venue";
+          inputVenue.placeholder = "e.g. IMAX, Prasads, Sandhya 70mm";
+        } else {
+          whereDetailsLabel.textContent = "Streaming Platform";
+          inputVenue.placeholder = "e.g. Netflix, Prime Video, Apple TV+";
+        }
+
+        // Render Preset Chips cleanly with no overflow
+        const presets = PRESETS[state.watchMedium] || [];
+        chipsContainer.innerHTML = '';
+        presets.forEach(preset => {
+          const isSelected = state.venueText.trim().toLowerCase() === preset.toLowerCase();
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = `chip-btn text-[11px] font-semibold px-2.5 py-1 rounded-md border transition whitespace-nowrap ${
+            isSelected 
+              ? 'bg-brand-500 text-white border-brand-500 shadow-sm' 
+              : 'bg-darkcard text-gray-300 border-darkborder hover:border-gray-500'
+          }`;
+          chip.textContent = preset;
+          chip.addEventListener('click', () => {
+            state.venueText = preset;
+            inputVenue.value = preset;
+            renderWhereWatchedUI();
+            triggerRender();
+          });
+          chipsContainer.appendChild(chip);
+        });
+      }
+    }
+
+    // =================================================================
+    // POSTER DRAWING ENGINE (ASPECT RATIO PRESERVING & NON-DISTORTING)
+    // =================================================================
+    function drawPosterImage(ctx, img, x, y, width, height, mode, focus) {
+      if (!img) return;
+
+      const imgW = img.width || 600;
+      const imgH = img.height || 900;
+      const targetAspect = width / height;
+      const imgAspect = imgW / imgH;
+
+      let srcX = 0, srcY = 0, srcW = imgW, srcH = imgH;
+
+      if (mode === 'cover') {
+        if (imgAspect > targetAspect) {
+          srcW = imgH * targetAspect;
+          if (focus === 'center') srcX = (imgW - srcW) / 2;
+          else if (focus === 'bottom') srcX = imgW - srcW;
+          else srcX = 0; // top / left
+        } else {
+          srcH = imgW / targetAspect;
+          if (focus === 'center') srcY = (imgH - srcH) / 2;
+          else if (focus === 'bottom') srcY = imgH - srcH;
+          else srcY = 0; // top
+        }
+        ctx.drawImage(img, srcX, srcY, srcW, srcH, x, y, width, height);
+      } else {
+        // Fit (Contain) Mode - Background box fill + centered fit
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.fillRect(x, y, width, height);
+
+        let destW = width, destH = height;
+        let destX = x, destY = y;
+
+        if (imgAspect > targetAspect) {
+          destH = width / imgAspect;
+          destY = y + (height - destH) / 2;
+        } else {
+          destW = height * imgAspect;
+          destX = x + (width - destW) / 2;
+        }
+        ctx.drawImage(img, 0, 0, imgW, imgH, destX, destY, destW, destH);
+      }
+    }
+
+    // Dynamic Text Measurement & Multi-line Wrapping
+    function wrapText(ctx, text, maxWidth) {
+      if (!text) return [];
+      const lines = [];
+      const paragraphs = text.split('\n');
+
+      paragraphs.forEach(p => {
+        if (p.trim() === '') {
+          lines.push('');
+          return;
+        }
+        const words = p.split(' ');
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+          const word = words[i];
+          const testLine = currentLine + ' ' + word;
+          if (ctx.measureText(testLine).width <= maxWidth) {
+            currentLine = testLine;
+          } else {
+            lines.push(currentLine);
+            currentLine = word;
+          }
+        }
+        lines.push(currentLine);
+      });
+      return lines;
+    }
+
+    // =================================================================
+    // MAIN CANVAS LAYOUT EVALUATION & RENDER ENGINE
+    // =================================================================
+    function evaluateLayoutConfig() {
+      const dim = RATIO_MAP[state.aspectRatio] || RATIO_MAP["4:5"];
+      const W = dim.width;
+      const H = dim.height;
+      const theme = THEMES[state.theme] || THEMES["blurred-glass"];
+
+      // Pad & Margin Configs
+      const margin = 50;
+      const headerH = 110;
+      const footerH = 80;
+      const contentTop = margin + headerH;
+      const contentBottom = H - margin - footerH;
+      const contentAvailH = contentBottom - contentTop;
+      const innerW = W - margin * 2;
+
+      // Determine Hero Layout (Side-by-side vs Compact top-bottom for Square/Stories)
+      const isCompactHero = (state.aspectRatio === '1:1' || contentAvailH < 750);
+      
+      let posterW, posterH, metaX, metaW;
+      if (isCompactHero) {
+        posterW = 200;
+        posterH = 290;
+        metaX = margin + posterW + 30;
+        metaW = innerW - posterW - 30;
+      } else {
+        posterW = 320;
+        posterH = 470;
+        metaX = margin + posterW + 40;
+        metaW = innerW - posterW - 40;
+      }
+
+      // Prepare Badges List for Layout Calculation
+      const badges = [];
+      if (state.watchMedium === 'theater') {
+        const label = state.venueText.trim() ? `THEATER · ${state.venueText.trim()}` : `THEATER`;
+        badges.push({ type: 'theater', label: label, icon: 'ticket' });
+      } else if (state.watchMedium === 'ott') {
+        const label = state.venueText.trim() ? `OTT · ${state.venueText.trim()}` : `OTT`;
+        badges.push({ type: 'ott', label: label, icon: 'ott' });
+      }
+      if (state.isRewatch) {
+        badges.push({ type: 'rewatch', label: 'REWATCH', icon: 'rewatch' });
+      }
+
+      // Calculate Badge Section Height using Shared Layout Engine
+      const badgeLayout = layoutWatchBadges(ctx, badges, metaW, isCompactHero);
+
+      // Hero Height Calculation
+      const heroH = Math.max(posterH, 240 + badgeLayout.totalHeight);
+      const reviewTop = contentTop + heroH + 30;
+      const reviewBoxH = contentBottom - reviewTop;
+
+      return {
+        W, H, theme, margin, innerW, contentTop, contentBottom,
+        isCompactHero, posterW, posterH, metaX, metaW,
+        badges, badgeLayout, heroH, reviewTop, reviewBoxH
+      };
+    }
+
+    function renderCanvas() {
+      // Ensure canvas DOM resolution matches target Instagram ratio
+      const cfg = evaluateLayoutConfig();
+      canvas.width = cfg.W;
+      canvas.height = cfg.H;
+
+      const { W, H, theme, margin, innerW, contentTop, isCompactHero, posterW, posterH, metaX, metaW, badges, badgeLayout, heroH, reviewTop, reviewBoxH } = cfg;
+      const activePoster = state.posterImage || getFallbackPosterImage();
+
+      // -------------------------------------------------------------
+      // 1. BACKGROUND RENDER
+      // -------------------------------------------------------------
+      if (theme.bgType === 'glass') {
+        // Draw poster background with heavy frosted blur overlay
+        ctx.drawImage(activePoster, 0, 0, W, H);
+        ctx.fillStyle = theme.bgOverlay;
+        ctx.fillRect(0, 0, W, H);
+      } else {
+        ctx.fillStyle = theme.bgColor;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      // Outer Decorative Card Border
+      ctx.strokeStyle = theme.cardBorder;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(margin / 2, margin / 2, W - margin, H - margin);
+
+      // -------------------------------------------------------------
+      // 2. EDITORIAL HEADER (NO CARD NO. BADGE, CLEAN BRANDING)
+      // -------------------------------------------------------------
+      ctx.save();
+      const headerY = margin + 15;
+      
+      // Brand Name
+      ctx.fillStyle = theme.textPrimary;
+      ctx.font = '900 34px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(state.brandName.toUpperCase(), margin, headerY);
+
+      // Sub-Tagline
+      ctx.fillStyle = state.accentColor;
+      ctx.font = '700 13px "JetBrains Mono", monospace';
+      ctx.fillText(state.headerSubtagline.toUpperCase(), margin, headerY + 42);
+
+      // Header Separator Line
+      ctx.strokeStyle = theme.divider;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(margin, margin + 78);
+      ctx.lineTo(W - margin, margin + 78);
+      ctx.stroke();
+      ctx.restore();
+
+      // -------------------------------------------------------------
+      // 3. HERO SECTION (POSTER & METADATA COLUMN)
+      // -------------------------------------------------------------
+      const heroY = contentTop;
+
+      // Draw Movie Poster with aspect-ratio preserving engine
+      ctx.save();
+      // Poster drop shadow & border
+      ctx.shadowColor = 'rgba(0,0,0,0.5)';
+      ctx.shadowBlur = 25;
+      ctx.shadowOffsetY = 10;
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(margin, heroY, posterW, posterH);
+      ctx.shadowColor = 'transparent'; // reset shadow
+
+      ctx.strokeStyle = theme.cardBorder;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(margin, heroY, posterW, posterH);
+
+      drawPosterImage(ctx, activePoster, margin, heroY, posterW, posterH, state.posterMode, state.posterFocus);
+      ctx.restore();
+
+      // Metadata Info Column (Right Side)
+      let curY = heroY + 5;
+
+      // Movie Title (Wrapped if long)
+      ctx.fillStyle = theme.textPrimary;
+      ctx.font = isCompactHero ? '800 36px Inter, sans-serif' : '900 46px Inter, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+
+      const titleLines = wrapText(ctx, state.title.toUpperCase(), metaW);
+      titleLines.slice(0, 2).forEach(line => {
+        ctx.fillText(line, metaX, curY);
+        curY += isCompactHero ? 42 : 52;
+      });
+
+      // Year / Genre Subtitle
+      ctx.fillStyle = theme.textMuted;
+      ctx.font = '600 16px "JetBrains Mono", monospace';
+      ctx.fillText(state.year.toUpperCase(), metaX, curY);
+      curY += isCompactHero ? 32 : 38;
+
+      // Star Rating Bar
+      ctx.save();
+      const rating = Math.min(5, Math.max(0, parseFloat(state.rating) || 0));
+      const fullStars = Math.floor(rating);
+      const hasHalf = (rating % 1) >= 0.5;
+      const starSize = isCompactHero ? 20 : 24;
+
+      ctx.fillStyle = state.accentColor;
+      ctx.font = `700 ${starSize}px Inter, sans-serif`;
+      
+      let starStr = '';
+      for (let i = 0; i < fullStars; i++) starStr += '★ ';
+      if (hasHalf) starStr += '½ ';
+      ctx.fillText(starStr, metaX, curY);
+
+      // Numeric Rating Badge
+      const starWidth = ctx.measureText(starStr).width;
+      ctx.fillStyle = theme.textPrimary;
+      ctx.font = '700 16px "JetBrains Mono", monospace';
+      ctx.fillText(`${rating.toFixed(1)} / 5.0`, metaX + starWidth + 8, curY + (isCompactHero ? 2 : 4));
+      ctx.restore();
+
+      curY += isCompactHero ? 38 : 46;
+
+      // =============================================================
+      // CRITICAL FIX: RENDER ZERO-JUMBLE WATCH BADGES
+      // =============================================================
+      if (badges.length > 0) {
+        ctx.save();
+        badgeLayout.items.forEach(item => {
+          const bx = metaX + item.x;
+          const by = curY + item.y;
+
+          // Background Pill Rect
+          ctx.fillStyle = theme.badgeBg;
+          ctx.strokeStyle = theme.badgeBorder;
+          ctx.lineWidth = 1.5;
+          
+          ctx.beginPath();
+          ctx.roundRect(bx, by, item.w, item.h, item.h / 2);
+          ctx.fill();
+          ctx.stroke();
+
+          // Vector Icon Alignment
+          const iconX = bx + item.padLeft;
+          const iconY = by + (item.h - item.iconSize) / 2;
+          drawBadgeIcon(ctx, item.badge.icon, iconX, iconY, item.iconSize, state.accentColor);
+
+          // Text Alignment (Strict Vertical Centering)
+          ctx.fillStyle = theme.textPrimary;
+          ctx.font = `700 ${item.fontSize}px "JetBrains Mono", monospace`;
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.text, bx + item.padLeft + item.iconSize + item.iconGap, by + item.h / 2 + 1);
+        });
+        ctx.restore();
+
+        // Advance Hero Cursor by total badge height + clean margin gap
+        curY += badgeLayout.totalHeight + (isCompactHero ? 16 : 22);
+      }
+
+      // Director & Cast Lines
+      ctx.save();
+      ctx.font = '14px Inter, sans-serif';
+      
+      if (state.director.trim()) {
+        ctx.fillStyle = theme.textMuted;
+        ctx.font = '600 12px "JetBrains Mono", monospace';
+        ctx.fillText('DIRECTED BY', metaX, curY);
+        ctx.fillStyle = theme.textSecondary;
+        ctx.font = '700 15px Inter, sans-serif';
+        ctx.fillText(state.director, metaX, curY + 18);
+        curY += isCompactHero ? 38 : 44;
+      }
+
+      if (state.cast.trim() && !isCompactHero) {
+        ctx.fillStyle = theme.textMuted;
+        ctx.font = '600 12px "JetBrains Mono", monospace';
+        ctx.fillText('STARRING', metaX, curY);
+        ctx.fillStyle = theme.textSecondary;
+        ctx.font = '600 14px Inter, sans-serif';
+        ctx.fillText(state.cast, metaX, curY + 18);
+      }
+      ctx.restore();
+
+      // -------------------------------------------------------------
+      // 4. REVIEW TEXT BOX (ZERO-OVERFLOW + AUTO COLUMNS)
+      // -------------------------------------------------------------
+      if (reviewBoxH > 100) {
+        ctx.save();
+        
+        // Review Box Container Styling
+        ctx.fillStyle = theme.reviewBoxBg;
+        ctx.strokeStyle = theme.cardBorder;
+        ctx.lineWidth = 1.5;
+        
+        ctx.beginPath();
+        ctx.roundRect(margin, reviewTop, innerW, reviewBoxH, 16);
+        ctx.fill();
+        ctx.stroke();
+
+        // Review Header Tag Label
+        const labelY = reviewTop + 24;
+        ctx.fillStyle = state.accentColor;
+        ctx.font = '800 13px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`// ${state.reviewLabel.toUpperCase()}`, margin + 28, labelY);
+
+        // Header Divider Line inside Review Box
+        ctx.strokeStyle = theme.divider;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(margin + 28, labelY + 24);
+        ctx.lineTo(margin + innerW - 28, labelY + 24);
+        ctx.stroke();
+
+        // HARD GPU CLIPPING GUARD (PREVENTS ANY TEXT OVERFLOW INTO FOOTER)
+        const textAreaTop = labelY + 36;
+        const textAreaBottom = reviewTop + reviewBoxH - 24;
+        const textAreaH = textAreaBottom - textAreaTop;
+        const textAreaW = innerW - 56;
+
+        ctx.beginPath();
+        ctx.rect(margin + 28, textAreaTop, textAreaW, textAreaH);
+        ctx.clip(); // Restrict rendering inside review box bounds
+
+        // Determine Column Layout (Auto / 1 Column / 2 Columns)
+        let useTwoColumns = false;
+        if (state.columnMode === '2') useTwoColumns = true;
+        else if (state.columnMode === 'auto') {
+          useTwoColumns = (state.reviewText.length > 320 && textAreaW > 700);
+        }
+
+        ctx.fillStyle = theme.textPrimary;
+        ctx.font = '400 18px Inter, sans-serif';
+        const lineHeight = 28;
+
+        if (!useTwoColumns) {
+          // Single Column Layout
+          const lines = wrapText(ctx, state.reviewText, textAreaW);
+          let textY = textAreaTop;
+          
+          lines.forEach(line => {
+            if (line === '') {
+              textY += lineHeight * 0.5;
+            } else {
+              ctx.fillText(line, margin + 28, textY);
+              textY += lineHeight;
+            }
+          });
+
+          // Fit Metrics Calculation for UI feedback
+          const totalTextH = lines.length * lineHeight;
+          updateFitMetrics(totalTextH, textAreaH);
+
+        } else {
+          // Two Columns Magazine Layout
+          const colW = (textAreaW - 40) / 2;
+          const col1X = margin + 28;
+          const col2X = col1X + colW + 40;
+
+          // Draw Divider line between columns
+          ctx.strokeStyle = theme.divider;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(col1X + colW + 20, textAreaTop);
+          ctx.lineTo(col1X + colW + 20, textAreaBottom);
+          ctx.stroke();
+
+          const lines = wrapText(ctx, state.reviewText, colW);
+          const maxLinesPerCol = Math.floor(textAreaH / lineHeight);
+
+          let textY = textAreaTop;
+          let currentCol = 1;
+          let linesInCol = 0;
+
+          lines.forEach(line => {
+            if (currentCol === 1 && linesInCol >= maxLinesPerCol) {
+              currentCol = 2;
+              textY = textAreaTop;
+              linesInCol = 0;
+            }
+
+            const currentX = (currentCol === 1) ? col1X : col2X;
+
+            if (line === '') {
+              textY += lineHeight * 0.5;
+            } else {
+              ctx.fillText(line, currentX, textY);
+              textY += lineHeight;
+              linesInCol++;
+            }
+          });
+
+          const totalTextH = Math.ceil(lines.length / 2) * lineHeight;
+          updateFitMetrics(totalTextH, textAreaH);
+        }
+
+        ctx.restore();
+      }
+
+      // -------------------------------------------------------------
+      // 5. FOOTER BRANDING (STRICTLY ISOLATED AT BOTTOM)
+      // -------------------------------------------------------------
+      ctx.save();
+      const footerY = H - margin - 25;
+      
+      ctx.strokeStyle = theme.divider;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(margin, footerY - 20);
+      ctx.lineTo(W - margin, footerY - 20);
+      ctx.stroke();
+
+      // Instagram Handle
+      ctx.fillStyle = state.accentColor;
+      ctx.font = '700 15px "JetBrains Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(state.instaHandle, margin, footerY);
+
+      // Footer Tagline
+      ctx.fillStyle = theme.textMuted;
+      ctx.font = '600 13px "JetBrains Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(state.footerTagline.toUpperCase(), W - margin, footerY);
+
+      ctx.restore();
+    }
+
+    // Update Fit Metrics Pill in UI
+    function updateFitMetrics(textH, availableH) {
+      if (availableH <= 0) return;
+      const pct = Math.round((textH / availableH) * 100);
+      
+      fitDetails.textContent = `${pct}% Box Capacity`;
+      if (pct > 100) {
+        fitStatusDot.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
+        fitStatusText.textContent = "Text Clipped Safely";
+        fitStatusText.className = "font-medium text-red-400";
+      } else if (pct > 85) {
+        fitStatusDot.className = "w-2 h-2 rounded-full bg-amber-500";
+        fitStatusText.textContent = "Optimal Full Card";
+        fitStatusText.className = "font-medium text-amber-400";
+      } else {
+        fitStatusDot.className = "w-2 h-2 rounded-full bg-green-500";
+        fitStatusText.textContent = "Layout Fits Perfectly";
+        fitStatusText.className = "font-medium text-gray-300";
+      }
+    }
+
+    // Trigger Canvas Redraw
+    function triggerRender() {
+      requestAnimationFrame(() => {
+        renderCanvas();
+      });
+    }
+
+    // Sync UI Controls with State
+    function syncUIFromState() {
+      inputTitle.value = state.title;
+      inputYear.value = state.year;
+      inputRating.value = state.rating;
+      inputDirector.value = state.director;
+      inputCast.value = state.cast;
+      inputReviewLabel.value = state.reviewLabel;
+      inputReviewText.value = state.reviewText;
+      selectPosterMode.value = state.posterMode;
+      selectPosterFocus.value = state.posterFocus;
+      checkRewatch.checked = state.isRewatch;
+      inputVenue.value = state.venueText;
+      inputAccentColor.value = state.accentColor;
+      accentHexLabel.textContent = state.accentColor.toUpperCase();
+      inputBrandName.value = state.brandName;
+      inputHeaderSubtagline.value = state.headerSubtagline;
+      inputInstaHandle.value = state.instaHandle;
+      inputFooterTagline.value = state.footerTagline;
+
+      // Aspect Ratio buttons
+      document.querySelectorAll('.ratio-btn').forEach(btn => {
+        const r = btn.getAttribute('data-ratio');
+        if (r === state.aspectRatio) {
+          btn.className = "ratio-btn active p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-brand-500/10 border-brand-500 text-white shadow-sm";
+        } else {
+          btn.className = "ratio-btn p-3 rounded-xl border flex flex-col items-center justify-center gap-1 transition bg-darkbg border-darkborder text-gray-400 hover:text-white";
+        }
+      });
+
+      // Update Ratio badge text in top bar
+      const ratioBadge = document.getElementById('preview-ratio-badge');
+      if (ratioBadge && RATIO_MAP[state.aspectRatio]) {
+        ratioBadge.textContent = RATIO_MAP[state.aspectRatio].name;
+      }
+
+      // Theme buttons
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        const t = btn.getAttribute('data-theme');
+        if (t === state.theme) {
+          btn.classList.add('border-brand-500', 'shadow-md');
+          btn.classList.remove('border-darkborder');
+        } else {
+          btn.classList.remove('border-brand-500', 'shadow-md');
+          btn.classList.add('border-darkborder');
+        }
+      });
+
+      // Column buttons
+      document.querySelectorAll('.col-mode-btn').forEach(btn => {
+        const c = btn.getAttribute('data-cols');
+        if (c === state.columnMode) {
+          btn.className = "col-mode-btn active px-3 py-2 rounded-lg text-xs font-semibold border text-center transition bg-brand-500/20 text-brand-500 border-brand-500/40";
+        } else {
+          btn.className = "col-mode-btn px-3 py-2 rounded-lg text-xs font-semibold border text-center transition bg-darkcard text-gray-400 border-darkborder hover:text-white";
+        }
+      });
+
+      renderWhereWatchedUI();
+    }
+
+    // Local Storage Persistence
+    function saveBrandToStorage() {
+      const brandData = {
+        brandName: state.brandName,
+        headerSubtagline: state.headerSubtagline,
+        instaHandle: state.instaHandle,
+        footerTagline: state.footerTagline,
+        accentColor: state.accentColor
+      };
+      localStorage.setItem('bunny_film_diary_brand', JSON.stringify(brandData));
+    }
+
+    function loadBrandFromStorage() {
+      try {
+        const saved = localStorage.getItem('bunny_film_diary_brand');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.brandName) state.brandName = parsed.brandName;
+          if (parsed.headerSubtagline) state.headerSubtagline = parsed.headerSubtagline;
+          if (parsed.instaHandle) state.instaHandle = parsed.instaHandle;
+          if (parsed.footerTagline) state.footerTagline = parsed.footerTagline;
+          if (parsed.accentColor) state.accentColor = parsed.accentColor;
+        }
+      } catch (e) {
+        console.warn("LocalStorage load error:", e);
+      }
+    }
+
+    // Local Review Archive Manager
+    function getArchive() {
+      try {
+        return JSON.parse(localStorage.getItem('bunny_film_diary_archive') || '[]');
+      } catch(e) { return []; }
+    }
+
+    function renderArchiveList() {
+      const list = getArchive();
+      const archiveContainer = document.getElementById('archive-list');
+      if (!archiveContainer) return;
+
+      if (list.length === 0) {
+        archiveContainer.innerHTML = `<div class="text-xs text-gray-500 italic p-2 text-center">No saved reviews in archive</div>`;
+        return;
+      }
+
+      archiveContainer.innerHTML = '';
+      list.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between p-2 rounded-lg bg-darkcard border border-darkborder text-xs";
+        div.innerHTML = `
+          <div class="truncate flex-1 cursor-pointer" onclick="loadArchiveItem(${index})">
+            <span class="font-bold text-white">${item.title || 'Untitled'}</span>
+            <span class="text-[10px] text-gray-400 block">${item.year || ''} · ${item.watchMedium || 'Theater'}</span>
+          </div>
+          <button onclick="deleteArchiveItem(${index})" class="text-gray-500 hover:text-red-400 p-1">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        `;
+        archiveContainer.appendChild(div);
+      });
+      lucide.createIcons();
+    }
+
+    window.loadArchiveItem = function(index) {
+      const list = getArchive();
+      const item = list[index];
+      if (item) {
+        Object.assign(state, item);
+        syncUIFromState();
+        triggerRender();
+      }
+    };
+
+    window.deleteArchiveItem = function(index) {
+      const list = getArchive();
+      list.splice(index, 1);
+      localStorage.setItem('bunny_film_diary_archive', JSON.stringify(list));
+      renderArchiveList();
+    };
+
+    // =================================================================
+    // EVENT LISTENERS & INITIALIZATION
+    // =================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Lucide Icons
+      lucide.createIcons();
+
+      // Load Brand Preferences
+      loadBrandFromStorage();
+
+      // Navigation Tabs Listener
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.className = "tab-btn text-gray-400 hover:text-gray-200 border-b-2 border-transparent px-3 py-2 rounded-t-lg transition flex items-center gap-1.5";
+          });
+          btn.className = "tab-btn active border-b-2 border-brand-500 text-brand-500 px-3 py-2 rounded-t-lg transition flex items-center gap-1.5";
+          
+          const target = btn.getAttribute('data-tab');
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+          document.getElementById(target).classList.remove('hidden');
+        });
+      });
+
+      // Inputs Event Binding
+      inputTitle.addEventListener('input', e => { state.title = e.target.value; triggerRender(); });
+      inputYear.addEventListener('input', e => { state.year = e.target.value; triggerRender(); });
+      inputRating.addEventListener('input', e => { state.rating = e.target.value; triggerRender(); });
+      inputDirector.addEventListener('input', e => { state.director = e.target.value; triggerRender(); });
+      inputCast.addEventListener('input', e => { state.cast = e.target.value; triggerRender(); });
+      inputReviewLabel.addEventListener('input', e => { state.reviewLabel = e.target.value; triggerRender(); });
+      inputReviewText.addEventListener('input', e => { state.reviewText = e.target.value; triggerRender(); });
+      selectPosterMode.addEventListener('change', e => { state.posterMode = e.target.value; triggerRender(); });
+      selectPosterFocus.addEventListener('change', e => { state.posterFocus = e.target.value; triggerRender(); });
+      
+      // Watch Medium Selector (Theater / OTT / None)
+      document.querySelectorAll('.medium-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.watchMedium = btn.getAttribute('data-medium');
+          // Reset default venue text for theme appropriateness
+          if (state.watchMedium === 'theater' && !PRESETS.theater.includes(state.venueText)) state.venueText = "IMAX";
+          if (state.watchMedium === 'ott' && !PRESETS.ott.includes(state.venueText)) state.venueText = "Netflix";
+          inputVenue.value = state.venueText;
+          renderWhereWatchedUI();
+          triggerRender();
+        });
+      });
+
+      checkRewatch.addEventListener('change', e => {
+        state.isRewatch = e.target.checked;
+        triggerRender();
+      });
+
+      inputVenue.addEventListener('input', e => {
+        state.venueText = e.target.value;
+        renderWhereWatchedUI();
+        triggerRender();
+      });
+
+      btnClearVenue.addEventListener('click', () => {
+        state.venueText = '';
+        inputVenue.value = '';
+        renderWhereWatchedUI();
+        triggerRender();
+      });
+
+      // Poster File Upload
+      inputPosterFile.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) {
+          posterFileName.textContent = file.name;
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const img = new Image();
+            img.onload = function() {
+              state.posterImage = img;
+              triggerRender();
+            };
+            img.src = evt.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      btnClearPoster.addEventListener('click', () => {
+        state.posterImage = null;
+        inputPosterFile.value = '';
+        posterFileName.textContent = "Default Fallback Poster";
+        triggerRender();
+      });
+
+      // Column Mode Buttons
+      document.querySelectorAll('.col-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.columnMode = btn.getAttribute('data-cols');
+          syncUIFromState();
+          triggerRender();
+        });
+      });
+
+      // Aspect Ratio Selector
+      document.querySelectorAll('.ratio-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.aspectRatio = btn.getAttribute('data-ratio');
+          syncUIFromState();
+          triggerRender();
+        });
+      });
+
+      // Theme Selector
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.theme = btn.getAttribute('data-theme');
+          syncUIFromState();
+          triggerRender();
+        });
+      });
+
+      // Accent Color Picker
+      inputAccentColor.addEventListener('input', e => {
+        state.accentColor = e.target.value;
+        accentHexLabel.textContent = state.accentColor.toUpperCase();
+        saveBrandToStorage();
+        triggerRender();
+      });
+
+      // Brand Info Inputs
+      inputBrandName.addEventListener('input', e => { state.brandName = e.target.value; saveBrandToStorage(); triggerRender(); });
+      inputHeaderSubtagline.addEventListener('input', e => { state.headerSubtagline = e.target.value; saveBrandToStorage(); triggerRender(); });
+      inputInstaHandle.addEventListener('input', e => { state.instaHandle = e.target.value; saveBrandToStorage(); triggerRender(); });
+      inputFooterTagline.addEventListener('input', e => { state.footerTagline = e.target.value; saveBrandToStorage(); triggerRender(); });
+
+      // Test Huge Review Button
+      document.getElementById('btn-test-huge').addEventListener('click', () => {
+        state.reviewText = "Dune: Part Two is a cinematic miracle of monumental proportions. Denis Villeneuve does not simply adapt Frank Herbert’s seminal sci-fi novel; he breathes staggering life into every grain of spice on Arrakis. Greig Fraser’s breathtaking photography combined with Hans Zimmer’s visceral score creates an immersive masterpiece.\n\nTimothée Chalamet delivers an extraordinary performance as Paul Atreides, charting his terrifying transformation from exile to violent messiah. Zendaya brings grounded emotional depth, while Austin Butler’s Feyd-Rautha is a terrifying presence. The sandworm riding sequences are mind-blowing, setting a new gold standard for blockbuster spectacle. A monumental achievement in modern cinema that demands to be experienced on the biggest screen possible.";
+        inputReviewText.value = state.reviewText;
+        triggerRender();
+      });
+
+      // Reset Form Button
+      document.getElementById('btn-reset-form').addEventListener('click', () => {
+        state.title = "DUNE: PART TWO";
+        state.year = "2024 · Sci-Fi / Epic";
+        state.rating = 4.5;
+        state.director = "Denis Villeneuve";
+        state.cast = "Timothée Chalamet, Zendaya, Rebecca Ferguson";
+        state.posterImage = null;
+        state.watchMedium = "theater";
+        state.venueText = "IMAX";
+        state.isRewatch = true;
+        state.reviewLabel = "BUNNY'S REVIEW";
+        state.reviewText = "Denis Villeneuve delivers an unassailable sci-fi masterpiece with Dune: Part Two. Greig Fraser’s cinematography elevates every frame to mythic grandeur, while Hans Zimmer’s thunderous score shakes the very soul of Arrakis. Timothée Chalamet gives a career-defining performance as Paul Atreides transitions from reluctant hero to feared messiah.\n\nThe pacing is relentless, the scale is unmatched in modern blockbuster cinema, and the sandworm sequences set a new benchmark for cinematic spectacle. An absolute triumph that demands the largest screen possible.";
+        state.columnMode = "auto";
+        state.aspectRatio = "4:5";
+        state.theme = "blurred-glass";
+        syncUIFromState();
+        triggerRender();
+      });
+
+      // Archive Save Button
+      document.getElementById('btn-save-archive').addEventListener('click', () => {
+        const archive = getArchive();
+        archive.unshift({
+          title: state.title,
+          year: state.year,
+          rating: state.rating,
+          director: state.director,
+          cast: state.cast,
+          watchMedium: state.watchMedium,
+          venueText: state.venueText,
+          isRewatch: state.isRewatch,
+          reviewLabel: state.reviewLabel,
+          reviewText: state.reviewText,
+          theme: state.theme,
+          aspectRatio: state.aspectRatio,
+          date: new Date().toLocaleDateString()
+        });
+        localStorage.setItem('bunny_film_diary_archive', JSON.stringify(archive.slice(0, 20))); // Keep last 20
+        renderArchiveList();
+      });
+
+      // Export PNG Button
+      document.getElementById('btn-download-png').addEventListener('click', () => {
+        // Ensure complete render before export
+        renderCanvas();
+        const link = document.createElement('a');
+        const filename = `${state.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_review_card.png`;
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        link.click();
+      });
+
+      // Ensure fonts are ready before initial paint
+      document.fonts.ready.then(() => {
+        syncUIFromState();
+        renderArchiveList();
+        triggerRender();
+      });
+    });
+  </script>
+</body>
+</html>
